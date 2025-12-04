@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-  // Lista de películas (puedes agregar más)
+  // Películas predeterminadas
   const [peliculas] = useState([
     {
       id: 1,
@@ -27,6 +27,25 @@ function App() {
   // Favoritos
   const [favoritos, setFavoritos] = useState([]);
 
+  // Mis películas (las que tú agregas manualmente)
+  const [misPeliculas, setMisPeliculas] = useState([]);
+
+  // Inputs del formulario
+  const [titulo, setTitulo] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [imagen, setImagen] = useState("");
+
+  // Cargar "Mis Películas" desde localStorage
+  useEffect(() => {
+    const guardadas = JSON.parse(localStorage.getItem("misPeliculas"));
+    if (guardadas) setMisPeliculas(guardadas);
+  }, []);
+
+  // Guardar automáticamente en localStorage
+  useEffect(() => {
+    localStorage.setItem("misPeliculas", JSON.stringify(misPeliculas));
+  }, [misPeliculas]);
+
   const agregarFavorito = (pelicula) => {
     if (!favoritos.some((fav) => fav.id === pelicula.id)) {
       setFavoritos([...favoritos, pelicula]);
@@ -37,15 +56,37 @@ function App() {
     setFavoritos(favoritos.filter((fav) => fav.id !== id));
   };
 
+  const agregarMiPelicula = () => {
+    if (titulo.trim() === "" || descripcion.trim() === "" || imagen.trim() === "") return;
+
+    const nuevaPelicula = {
+      id: Date.now(),
+      titulo,
+      descripcion,
+      imagen
+    };
+
+    setMisPeliculas([...misPeliculas, nuevaPelicula]);
+
+    // Limpiar inputs
+    setTitulo("");
+    setDescripcion("");
+    setImagen("");
+  };
+
+  const eliminarMiPelicula = (id) => {
+    setMisPeliculas(misPeliculas.filter((p) => p.id !== id));
+  };
+
   return (
     <div className="contenedor">
-      <h2 className="titulo-seccion">🎬 Películas Gratis</h2>
 
+      {/* Películas predeterminadas */}
+      <h2 className="titulo-seccion">🎬 Películas Gratis</h2>
       <div className="galeria">
         {peliculas.map((peli) => (
           <div className="tarjeta" key={peli.id}>
             <img src={peli.imagen} alt={peli.titulo} className="imagen" />
-
             <div className="info">
               <h3>{peli.titulo}</h3>
               <p>{peli.descripcion}</p>
@@ -64,19 +105,17 @@ function App() {
         ))}
       </div>
 
+      {/* Favoritos */}
       <h2 className="titulo-seccion">⭐ Tus Favoritos</h2>
-
       {favoritos.length === 0 && <p className="vacio">No tienes favoritos aún.</p>}
 
       <div className="galeria">
         {favoritos.map((fav) => (
           <div className="tarjeta" key={fav.id}>
             <img src={fav.imagen} alt={fav.titulo} className="imagen" />
-
             <div className="info">
               <h3>{fav.titulo}</h3>
               <p>{fav.descripcion}</p>
-
               <button className="btn eliminar" onClick={() => eliminarFavorito(fav.id)}>
                 ❌ Quitar
               </button>
@@ -84,6 +123,50 @@ function App() {
           </div>
         ))}
       </div>
+
+      {/* NUEVA SECCIÓN: MIS PELÍCULAS */}
+      <h2 className="titulo-seccion">🎟️ Mis Películas</h2>
+
+      <div className="formulario">
+        <input
+          type="text"
+          placeholder="Título"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Descripción"
+          value={descripcion}
+          onChange={(e) => setDescripcion(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Enlace de imagen"
+          value={imagen}
+          onChange={(e) => setImagen(e.target.value)}
+        />
+        <button className="btn agregar" onClick={agregarMiPelicula}>
+          ➕ Agregar Película
+        </button>
+      </div>
+
+      <div className="galeria">
+        {misPeliculas.map((peli) => (
+          <div className="tarjeta" key={peli.id}>
+            <img src={peli.imagen} alt={peli.titulo} className="imagen" />
+            <div className="info">
+              <h3>{peli.titulo}</h3>
+              <p>{peli.descripcion}</p>
+
+              <button className="btn eliminar" onClick={() => eliminarMiPelicula(peli.id)}>
+                ❌ Borrar
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
