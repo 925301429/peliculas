@@ -6,21 +6,21 @@ function App() {
   const [peliculas] = useState([
     {
       id: 1,
-      titulo: "Lone Wolf McQuade",
-      descripcion: "Película de acción clásica.",
-      imagen: "https://m.media-amazon.com/images/I/81+jNVOUsJL._AC_UF894,1000_QL80_.jpg"
+      titulo: "demon slayer",
+      descripcion: "Película de anime.",
+      imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.sensacine.com%2Fseries%2Fserie-25661%2F&psig=AOvVaw3CLWI328RBgpYNct3jd1Jg&ust=1764944413103000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJCCuY-rpJEDFQAAAAAdAAAAABAE"
     },
     {
       id: 2,
-      titulo: "The Escort",
-      descripcion: "Drama romántico.",
-      imagen: "https://m.media-amazon.com/images/I/51NiGlapXlL._AC_.jpg"
+      titulo: "la tormenta",
+      descripcion: "novela",
+      imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.atresplayer.com%2Fnovelas-nova%2Ftelenovelas%2Fla-tormenta%2Ftemporada-1%2F&psig=AOvVaw3WtE_iyieeeW7qEXJfDFmc&ust=1764944475935000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCPj04q2rpJEDFQAAAAAdAAAAABAE"
     },
     {
       id: 3,
-      titulo: "What's the Worst That Could Happen?",
-      descripcion: "Comedia divertida.",
-      imagen: "https://m.media-amazon.com/images/I/71vT0Sx1o6L._AC_UF894,1000_QL80_.jpg"
+      titulo: "goku",
+      descripcion: "anime",
+      imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdble.bn-ent.net%2Fnews%2Fes%2Fcharacter%2F4743%2F&psig=AOvVaw0HpU1QaXPTcG4Ctc7XbFPo&ust=1764944572550000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLiKuturpJEDFQAAAAAdAAAAABAL"
     }
   ]);
 
