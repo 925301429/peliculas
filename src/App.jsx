@@ -8,19 +8,19 @@ function App() {
       id: 1,
       titulo: "demon slayer",
       descripcion: "Película de anime.",
-      imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.sensacine.com%2Fseries%2Fserie-25661%2F&psig=AOvVaw3CLWI328RBgpYNct3jd1Jg&ust=1764944413103000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJCCuY-rpJEDFQAAAAAdAAAAABAE"
+      imagen: "https://image.api.playstation.com/vulcan/ap/rnd/202106/1704/JzL1NLQvok7Pghe9W5PP2XNV.png"
     },
     {
       id: 2,
       titulo: "la tormenta",
       descripcion: "novela",
-      imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.atresplayer.com%2Fnovelas-nova%2Ftelenovelas%2Fla-tormenta%2Ftemporada-1%2F&psig=AOvVaw3WtE_iyieeeW7qEXJfDFmc&ust=1764944475935000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCPj04q2rpJEDFQAAAAAdAAAAABAE"
+      imagen: "https://imagenes.atresplayer.com/atp/clipping/cmsimages02/2023/07/03/3A2096C9-C0AF-4412-800E-2544565F2A55/1280x720.jpg"
     },
     {
       id: 3,
       titulo: "goku",
       descripcion: "anime",
-      imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdble.bn-ent.net%2Fnews%2Fes%2Fcharacter%2F4743%2F&psig=AOvVaw0HpU1QaXPTcG4Ctc7XbFPo&ust=1764944572550000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLiKuturpJEDFQAAAAAdAAAAABAL"
+      imagen: "https://wallpapers.com/images/featured/fondos-de-goku-vhm3f71ddueli0kl.jpg"
     }
   ]);
 
