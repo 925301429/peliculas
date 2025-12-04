@@ -1,81 +1,120 @@
-// App.jsx
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
 export default function App() {
-  const [peliculas, setPeliculas] = useState([]);
-  const [busqueda, setBusqueda] = useState("");
-  const [categoria, setCategoria] = useState("all");
-  const [seleccionada, setSeleccionada] = useState(null);
+  const [videos, setVideos] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [search, setSearch] = useState("");
 
-  const API = "https://api.themoviedb.org/3/movie/popular?api_key=YOUR_API_KEY&language=es";
+  // 🔹 Simulación de videos (puedes reemplazar con tu API)
+  const mockVideos = [
+    { id: 1, title: "Lone Wolf McQuade", year: 1983, img: "https://i.imgur.com/i0T19sW.jpeg" },
+    { id: 2, title: "What’s The Worst That Could Happen?", year: 2001, img: "https://i.imgur.com/pDT7Hle.jpeg" },
+    { id: 3, title: "The Escort", year: 2016, img: "https://i.imgur.com/pxEcKIp.jpeg" },
+    { id: 4, title: "Contagion", year: 2011, img: "https://i.imgur.com/LOmM2Pt.jpeg" },
+    { id: 5, title: "Jumanji", year: 1995, img: "https://i.imgur.com/DTK5eY3.jpeg" },
+  ];
 
   useEffect(() => {
-    fetch(API)
-      .then((res) => res.json())
-      .then((data) => setPeliculas(data.results || []));
+    setVideos(mockVideos);
+
+    const savedFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(savedFavs);
   }, []);
 
-  const filtrarPeliculas = peliculas.filter((p) => {
-    const coincideBusqueda = p.title.toLowerCase().includes(busqueda.toLowerCase());
-    const coincideCategoria = categoria === "all" || (p.genre_ids && p.genre_ids.includes(Number(categoria)));
-    return coincideBusqueda && coincideCategoria;
-  });
+  const toggleFavorite = (video) => {
+    let updated;
+    if (favorites.some((v) => v.id === video.id)) {
+      updated = favorites.filter((v) => v.id !== video.id); // ❌ borrar favorito
+    } else {
+      updated = [...favorites, video]; // ⭐ agregar favorito
+    }
+    setFavorites(updated);
+    localStorage.setItem("favorites", JSON.stringify(updated));
+  };
+
+  const filteredVideos = videos.filter((v) =>
+    v.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="container">
-      <h1 className="titulo">🎬 Películas Destacadas</h1>
-
-      <div className="acciones">
+    <div className="app">
+      {/* 🔍 buscador */}
+      <div className="search-box">
         <input
-          className="input"
           type="text"
-          placeholder="Buscar película..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar videos..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-
-        <select className="select" onChange={(e) => setCategoria(e.target.value)}>
-          <option value="all">Todas</option>
-          <option value="28">Acción</option>
-          <option value="27">Terror</option>
-          <option value="10749">Romance</option>
-          <option value="35">Comedia</option>
-        </select>
       </div>
 
-      <div className="carrusel">
-        {peliculas.slice(0, 5).map((p) => (
-          <img
-            key={p.id}
-            src={`https://image.tmdb.org/t/p/w300${p.poster_path}`}
-            alt={p.title}
-          />
-        ))}
-      </div>
-
-      <div className="grid">
-        {filtrarPeliculas.map((p) => (
-          <div key={p.id} className="card" onClick={() => setSeleccionada(p)}>
-            <div className="img-wrapper">
-              <img src={`https://image.tmdb.org/t/p/w300${p.poster_path}`} alt={p.title} />
-            </div>
-            <h2>{p.title}</h2>
-            <button className="btn">Ver Detalles</button>
-          </div>
-        ))}
-      </div>
-
-      {seleccionada && (
-        <div className="modal" onClick={() => setSeleccionada(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>{seleccionada.title}</h2>
-            <img src={`https://image.tmdb.org/t/p/w300${seleccionada.poster_path}`} alt="" />
-            <p>{seleccionada.overview}</p>
-            <button className="cerrar" onClick={() => setSeleccionada(null)}>Cerrar</button>
+      {/* ⭐ Bloque de Favoritos */}
+      {favorites.length > 0 && (
+        <div className="section">
+          <h3>⭐ Favoritos</h3>
+          <div className="scroll-row">
+            {favorites.map((v) => (
+              <Card
+                key={v.id}
+                video={v}
+                toggleFavorite={toggleFavorite}
+                isFavorite
+              />
+            ))}
           </div>
         </div>
       )}
+
+      {/* 🎬 Sección carrusel horizontal */}
+      <div className="section">
+        <h3>Videos gratuitos</h3>
+        <div className="scroll-row">
+          {filteredVideos.map((v) => (
+            <Card
+              key={v.id}
+              video={v}
+              toggleFavorite={toggleFavorite}
+              isFavorite={favorites.some((f) => f.id === v.id)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 📜 Lista vertical (como imagen derecha) */}
+      <h3 className="list-title">Videos gratis</h3>
+      <div className="vertical-list">
+        {filteredVideos.map((v) => (
+          <div key={v.id} className="list-item">
+            <img src={v.img} alt={v.title} />
+
+            <div className="info">
+              <h4>{v.title}</h4>
+              <p>Películas • {v.year}</p>
+            </div>
+
+            <button
+              className="fav-btn"
+              onClick={() => toggleFavorite(v)}
+            >
+              {favorites.some((f) => f.id === v.id) ? "💔" : "❤️"}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Card({ video, toggleFavorite, isFavorite }) {
+  return (
+    <div className="card">
+      <img src={video.img} alt={video.title} />
+      <p className="title">{video.title}</p>
+      <p className="year">{video.year}</p>
+      <button className="fav-small" onClick={() => toggleFavorite(video)}>
+        {isFavorite ? "💔" : "❤️"}
+      </button>
     </div>
   );
 }
