@@ -1,104 +1,86 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
-export default function App() {
-  const [videos, setVideos] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-  const [search, setSearch] = useState("");
-
-  // 🔹 Simulación de videos (puedes reemplazar con tu API)
-  const mockVideos = [
-    { id: 1, title: "Lone Wolf McQuade", year: 1983, img: "https://i.imgur.com/i0T19sW.jpeg" },
-    { id: 2, title: "What’s The Worst That Could Happen?", year: 2001, img: "https://i.imgur.com/pDT7Hle.jpeg" },
-    { id: 3, title: "The Escort", year: 2016, img: "https://i.imgur.com/pxEcKIp.jpeg" },
-    { id: 4, title: "Contagion", year: 2011, img: "https://i.imgur.com/LOmM2Pt.jpeg" },
-    { id: 5, title: "Jumanji", year: 1995, img: "https://i.imgur.com/DTK5eY3.jpeg" },
-  ];
-
-  useEffect(() => {
-    setVideos(mockVideos);
-
-    const savedFavs = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavorites(savedFavs);
-  }, []);
-
-  const toggleFavorite = (video) => {
-    let updated;
-    if (favorites.some((v) => v.id === video.id)) {
-      updated = favorites.filter((v) => v.id !== video.id); // ❌ borrar favorito
-    } else {
-      updated = [...favorites, video]; // ⭐ agregar favorito
+function App() {
+  // Lista de películas (puedes agregar más)
+  const [peliculas] = useState([
+    {
+      id: 1,
+      titulo: "Lone Wolf McQuade",
+      descripcion: "Película de acción clásica.",
+      imagen: "https://m.media-amazon.com/images/I/81+jNVOUsJL._AC_UF894,1000_QL80_.jpg"
+    },
+    {
+      id: 2,
+      titulo: "The Escort",
+      descripcion: "Drama romántico.",
+      imagen: "https://m.media-amazon.com/images/I/51NiGlapXlL._AC_.jpg"
+    },
+    {
+      id: 3,
+      titulo: "What's the Worst That Could Happen?",
+      descripcion: "Comedia divertida.",
+      imagen: "https://m.media-amazon.com/images/I/71vT0Sx1o6L._AC_UF894,1000_QL80_.jpg"
     }
-    setFavorites(updated);
-    localStorage.setItem("favorites", JSON.stringify(updated));
+  ]);
+
+  // Favoritos
+  const [favoritos, setFavoritos] = useState([]);
+
+  const agregarFavorito = (pelicula) => {
+    if (!favoritos.some((fav) => fav.id === pelicula.id)) {
+      setFavoritos([...favoritos, pelicula]);
+    }
   };
 
-  const filteredVideos = videos.filter((v) =>
-    v.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const eliminarFavorito = (id) => {
+    setFavoritos(favoritos.filter((fav) => fav.id !== id));
+  };
 
   return (
-    <div className="app">
-      {/* 🔍 buscador */}
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Buscar videos..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+    <div className="contenedor">
+      <h2 className="titulo-seccion">🎬 Películas Gratis</h2>
 
-      {/* ⭐ Bloque de Favoritos */}
-      {favorites.length > 0 && (
-        <div className="section">
-          <h3>⭐ Favoritos</h3>
-          <div className="scroll-row">
-            {favorites.map((v) => (
-              <Card
-                key={v.id}
-                video={v}
-                toggleFavorite={toggleFavorite}
-                isFavorite
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 🎬 Sección carrusel horizontal */}
-      <div className="section">
-        <h3>Videos gratuitos</h3>
-        <div className="scroll-row">
-          {filteredVideos.map((v) => (
-            <Card
-              key={v.id}
-              video={v}
-              toggleFavorite={toggleFavorite}
-              isFavorite={favorites.some((f) => f.id === v.id)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 📜 Lista vertical (como imagen derecha) */}
-      <h3 className="list-title">Videos gratis</h3>
-      <div className="vertical-list">
-        {filteredVideos.map((v) => (
-          <div key={v.id} className="list-item">
-            <img src={v.img} alt={v.title} />
+      <div className="galeria">
+        {peliculas.map((peli) => (
+          <div className="tarjeta" key={peli.id}>
+            <img src={peli.imagen} alt={peli.titulo} className="imagen" />
 
             <div className="info">
-              <h4>{v.title}</h4>
-              <p>Películas • {v.year}</p>
-            </div>
+              <h3>{peli.titulo}</h3>
+              <p>{peli.descripcion}</p>
 
-            <button
-              className="fav-btn"
-              onClick={() => toggleFavorite(v)}
-            >
-              {favorites.some((f) => f.id === v.id) ? "💔" : "❤️"}
-            </button>
+              {favoritos.some((fav) => fav.id === peli.id) ? (
+                <button className="btn eliminar" onClick={() => eliminarFavorito(peli.id)}>
+                  ❌ Quitar de Favoritos
+                </button>
+              ) : (
+                <button className="btn agregar" onClick={() => agregarFavorito(peli)}>
+                  ⭐ Agregar a Favoritos
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="titulo-seccion">⭐ Tus Favoritos</h2>
+
+      {favoritos.length === 0 && <p className="vacio">No tienes favoritos aún.</p>}
+
+      <div className="galeria">
+        {favoritos.map((fav) => (
+          <div className="tarjeta" key={fav.id}>
+            <img src={fav.imagen} alt={fav.titulo} className="imagen" />
+
+            <div className="info">
+              <h3>{fav.titulo}</h3>
+              <p>{fav.descripcion}</p>
+
+              <button className="btn eliminar" onClick={() => eliminarFavorito(fav.id)}>
+                ❌ Quitar
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -106,15 +88,4 @@ export default function App() {
   );
 }
 
-function Card({ video, toggleFavorite, isFavorite }) {
-  return (
-    <div className="card">
-      <img src={video.img} alt={video.title} />
-      <p className="title">{video.title}</p>
-      <p className="year">{video.year}</p>
-      <button className="fav-small" onClick={() => toggleFavorite(video)}>
-        {isFavorite ? "💔" : "❤️"}
-      </button>
-    </div>
-  );
-}
+export default App;
